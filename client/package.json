@@ -8,7 +8,7 @@
     "test": "ng test --watch=false",
     "test:watch": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e --port 4202"
   },
   "private": true,
   "dependencies": {
