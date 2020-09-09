@@ -1,0 +1,10 @@
+{
+  "name": "loss-control-plus",
+  "version": "1.0.0",
+  "repository": "https://github.com/binier/web-developer-hiring-project.git",
+  "author": "Zura Benashvili <zura.benashvili@gmail.com>",
+  "scripts": {
+    "dev": "docker-compose -f ./docker-compose.yml -f ./docker-compose.dev.yml --env-file ./.env up",
+    "prod": "docker-compose -f ./docker-compose.yml --env-file ./.env up"
+  }
+}
