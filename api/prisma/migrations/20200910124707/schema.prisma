@@ -1,0 +1,47 @@
+datasource db {
+  provider = "sqlite"
+  url = "***"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Policy {
+  id              Int      @id @default(autoincrement())
+  number          String
+  annual_premium  Float?
+  effective_date  DateTime?
+  created         DateTime @default(now())
+  updated         DateTime @default(now())
+  states          State[]
+}
+
+model State {
+  id        Int      @id @default(autoincrement())
+  policy_id Int
+  status    String
+  reason    String
+  created   DateTime @default(now())
+  updated   DateTime @default(now())
+  policy    Policy   @relation(fields: [policy_id], references: [id])
+}
+
+model Invoice {
+  id          Int      @id @default(autoincrement())
+  policy_id   Int
+  amount_due  Float
+  due_on      DateTime
+  created     DateTime @default(now())
+  updated     DateTime @default(now())
+  policy      Policy   @relation(fields: [policy_id], references: [id])
+}
+
+model Payment {
+  id              Int      @id @default(autoincrement())
+  policy_id       Int
+  payment_amount  Float
+  created         DateTime @default(now())
+  updated         DateTime @default(now())
+  policy          Policy   @relation(fields: [policy_id], references: [id])
+}
