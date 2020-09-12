@@ -6,6 +6,7 @@ import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { ModalComponent } from '@shared/modal/modal.component';
 import { PoliciesTableComponent } from '@shared/policies-table/policies-table.component';
+import { PolicyService } from '@services/index';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { PoliciesTableComponent } from '@shared/policies-table/policies-table.co
   imports: [
     CommonModule,
     HomeRoutingModule
-  ]
+  ],
+  providers: [ PolicyService ]
 })
 export class HomeModule { }

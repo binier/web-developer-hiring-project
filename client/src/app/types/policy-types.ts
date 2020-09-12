@@ -8,7 +8,7 @@ import {
 export { PolicyRaw };
 
 export interface Policy extends PolicyRaw {
-  state: State;
-  invoice: Invoice;
-  payments: Payment[];
+  state: Omit<State, 'policy_id'>;
+  invoice: Omit<Invoice, 'policy_id'>;
+  payments: Omit<Payment, 'policy_id'>[];
 }
