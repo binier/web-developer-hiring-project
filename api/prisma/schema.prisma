@@ -14,7 +14,9 @@ model Policy {
   effective_date  DateTime?
   created         DateTime @default(now())
   updated         DateTime @default(now())
+  invoice         Invoice
   states          State[]
+  payments        Payment[]
 }
 
 model State {
