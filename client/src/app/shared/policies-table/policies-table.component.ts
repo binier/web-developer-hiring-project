@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  Output,
+  OnInit,
+  EventEmitter
+} from '@angular/core';
 import { Policy } from '@app/types';
 
 @Component({
@@ -10,8 +17,17 @@ import { Policy } from '@app/types';
 export class PoliciesTableComponent implements OnInit {
   @Input() policies: Policy[] = [];
 
+  @Output() policyClick = new EventEmitter<{
+    policy: Policy,
+    column: string,
+  }>();
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  clickPolicy(policy: Policy, column: string) {
+    this.policyClick.emit({ policy, column });
   }
 }

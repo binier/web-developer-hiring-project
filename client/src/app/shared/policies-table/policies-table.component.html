@@ -11,13 +11,13 @@
 
   <tbody>
     <tr *ngFor="let policy of policies">
-      <td>{{ policy.number }}</td>
-      <td>{{ policy.annual_premium }}</td>
-      <td>{{ policy.state.status }}</td>
-      <td>{{ policy.invoice.amount_due }}</td>
-      <td>{{ policy.effective_date | date }}</td>
-      <td>{{ policy.invoice.due_on | date }}</td>
-      <td>{{ policy.payments.length }}</td>
+      <td (click)="clickPolicy(policy, 'number')" class="text-blue-500 cursor-pointer hover:underline">{{ policy.number }}</td>
+      <td (click)="clickPolicy(policy, 'annual_premium')">{{ policy.annual_premium }}</td>
+      <td (click)="clickPolicy(policy, 'status')">{{ policy.state.status }}</td>
+      <td (click)="clickPolicy(policy, 'amount')">{{ policy.invoice.amount_due }}</td>
+      <td (click)="clickPolicy(policy, 'effective_date')">{{ policy.effective_date | date }}</td>
+      <td (click)="clickPolicy(policy, 'due_date')">{{ policy.invoice.due_on | date }}</td>
+      <td (click)="clickPolicy(policy, 'payments')" class="text-blue-500 cursor-pointer hover:underline">{{ policy.payments.length }}</td>
     </tr>
   </tbody>
 </table>
