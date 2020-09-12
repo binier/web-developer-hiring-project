@@ -1,0 +1,11 @@
+th, td {
+  @apply border border-t-0 px-4 py-2;
+}
+
+thead th:first-child {
+  @apply bg-purple-300;
+}
+
+tbody tr:hover {
+  @apply bg-purple-100
+}

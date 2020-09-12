@@ -1,23 +1,23 @@
 <table class="max-h-screen whitespace-no-wrap shadow table-auto">
-  <thead class="bg-purple-300 rounded">
-    <th class="px-4 py-2 border">Number</th>
-    <th class="px-4 py-2 border">Annual Premium</th>
-    <th class="px-4 py-2 border">Status</th>
-    <th class="px-4 py-2 border">Amount</th>
-    <th class="px-4 py-2 border">Effective Date</th>
-    <th class="px-4 py-2 border">Due Date</th>
-    <th class="px-4 py-2 border">Payments</th>
+  <thead class="bg-purple-200 rounded">
+    <th>Number</th>
+    <th>Annual Premium</th>
+    <th>Status</th>
+    <th>Amount</th>
+    <th>Effective Date</th>
+    <th>Due Date</th>
+    <th>Payments</th>
   </thead>
 
   <tbody>
     <tr *ngFor="let policy of policies">
-      <td class="px-4 py-2 border">{{ policy.number }}</td>
-      <td class="px-4 py-2 border">{{ policy.annual_premium }}</td>
-      <td class="px-4 py-2 border">{{ policy.state.status }}</td>
-      <td class="px-4 py-2 border">{{ policy.invoice.amount_due }}</td>
-      <td class="px-4 py-2 border">{{ policy.effective_date | date }}</td>
-      <td class="px-4 py-2 border">{{ policy.invoice.due_on | date }}</td>
-      <td class="px-4 py-2 border">{{ policy.payments.length }}</td>
+      <td>{{ policy.number }}</td>
+      <td>{{ policy.annual_premium }}</td>
+      <td>{{ policy.state.status }}</td>
+      <td>{{ policy.invoice.amount_due }}</td>
+      <td>{{ policy.effective_date | date }}</td>
+      <td>{{ policy.invoice.due_on | date }}</td>
+      <td>{{ policy.payments.length }}</td>
     </tr>
   </tbody>
 </table>
