@@ -3,8 +3,14 @@ import { CommonModule } from '@angular/common';
 
 import { HomeRoutingModule } from './home-routing.module';
 
+import { HomeComponent } from './home.component';
+import { PoliciesTableComponent } from '@shared/policies-table/policies-table.component';
+
 @NgModule({
-  declarations: [],
+  declarations: [
+    PoliciesTableComponent,
+    HomeComponent
+  ],
   imports: [
     CommonModule,
     HomeRoutingModule
