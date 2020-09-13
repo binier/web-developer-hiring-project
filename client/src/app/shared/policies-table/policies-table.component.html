@@ -1,12 +1,47 @@
 <table class="w-full max-h-screen whitespace-no-wrap shadow table-auto">
-  <thead class="bg-purple-200 rounded">
-    <th>Number</th>
-    <th>Annual Premium</th>
-    <th>Status</th>
-    <th>Amount</th>
-    <th>Effective Date</th>
-    <th>Due Date</th>
-    <th>Payments</th>
+  <thead *ngIf="(sort$ | async) as sort" class="bg-purple-200 rounded">
+    <th (click)="doSort('number')">
+      Number
+      <i *ngIf="sort.column === 'number'" class="sort-icon">
+        {{ sort.rev ? '⌃' : '⌄' }}
+      </i>
+    </th>
+    <th (click)="doSort('annual_premium')">
+      Annual Premium
+      <i *ngIf="sort.column === 'annual_premium'" class="sort-icon">
+        {{ sort.rev ? '⌃' : '⌄' }}
+      </i>
+    </th>
+    <th (click)="doSort('status')">
+      Status
+      <i *ngIf="sort.column === 'status'" class="sort-icon">
+        {{ sort.rev ? '⌃' : '⌄' }}
+      </i>
+    </th>
+    <th (click)="doSort('amount')">
+      Amount
+      <i *ngIf="sort.column === 'amount'" class="sort-icon">
+        {{ sort.rev ? '⌃' : '⌄' }}
+      </i>
+    </th>
+    <th (click)="doSort('effective_date')">
+      Effective Date
+      <i *ngIf="sort.column === 'effective_date'" class="sort-icon">
+        {{ sort.rev ? '⌃' : '⌄' }}
+      </i>
+    </th>
+    <th (click)="doSort('due_date')">
+      Due Date
+      <i *ngIf="sort.column === 'due_date'" class="sort-icon">
+        {{ sort.rev ? '⌃' : '⌄' }}
+      </i>
+    </th>
+    <th (click)="doSort('payments')">
+      Payments
+      <i *ngIf="sort.column === 'payments'" class="sort-icon">
+        {{ sort.rev ? '⌃' : '⌄' }}
+      </i>
+    </th>
   </thead>
 
   <tbody>

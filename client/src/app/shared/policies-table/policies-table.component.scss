@@ -2,8 +2,16 @@ th, td {
   @apply border border-t-0 px-4 py-2;
 }
 
-thead th:first-child {
-  @apply bg-purple-300;
+th {
+  @apply cursor-pointer select-none;
+}
+
+th:hover {
+  @apply bg-purple-300
+}
+
+th .sort-icon {
+  @apply text-gray-800;
 }
 
 tbody tr:hover {
