@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { Policy } from '@app/types';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 export interface SortEvent {
   column: string;
@@ -33,15 +33,16 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
 
   private subs: Subscription[] = [];
 
-  private sortColumn$ = new BehaviorSubject<string>('number');
-  private sortRev$ = new BehaviorSubject<boolean>(false);
+  private sortColumn$ = new BehaviorSubject<string>(null);
+  private sortRev$ = new BehaviorSubject<boolean>(null);
 
   sort$ = combineLatest([this.sortColumn$, this.sortRev$])
     .pipe(
-      map(([column, rev]) => ({ column, rev })),
+      filter(opts => opts.every(x => x !== null)),
       distinctUntilChanged((prev, cur) => {
-        return prev.column === cur.column && prev.rev === cur.rev;
+        return prev.every((x, i) => x === cur[i]);
       }),
+      map(([column, rev]) => ({ column, rev })),
     );
 
   constructor() { }
@@ -50,6 +51,7 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
     this.subs.push(
       this.sort$.subscribe(x => this.sort.emit(x))
     );
+    this.doSort('number', false);
   }
 
   ngOnDestroy(): void {
