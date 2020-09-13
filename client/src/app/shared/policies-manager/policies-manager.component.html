@@ -3,5 +3,29 @@
 </div>
 <app-policies-table
   [policies]="policies$ | async"
+  (policyClick)="policyClick($event)"
 ></app-policies-table>
 
+<app-modal #paymentsModel>
+  <p class="text-2xl font-bold" header>Payments</p>
+  <div *ngIf="(currentPolicy$ | async) as policy" body>
+    <table>
+      <tbody>
+        <tr *ngFor="let payment of policy.payments">
+          <td>
+            {{payment.created | date}}
+          </td>
+          <td class="pl-8 font-bold">
+            {{payment.payment_amount}}
+          </td>
+        </tr>
+        <tr class="border-t-2">
+          <td></td>
+          <td class="pl-8 font-bold">
+            {{paymentsSum(policy)}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</app-modal>
