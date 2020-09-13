@@ -8,6 +8,15 @@
     (sort)="sort$.next($event)"
   ></app-policies-table>
 </div>
+<div *ngIf="{ page: page$ | async, total: policiesTotalPages$ | async} as ctx" class="policies-pagination">
+  <a (click)="setPage$.next(1)">{{ '<<' }}</a>
+  <a (click)="setPage$.next(ctx.page - 1)">{{ '<' }}</a>
+  <a *ngFor="let i of paginationPages$ | async" (click)="setPage$.next(i)" [class.current-page]="i === ctx.page">
+    {{ i }}
+  </a>
+  <a (click)="setPage$.next(ctx.page + 1)">{{ '>' }}</a>
+  <a (click)="setPage$.next(ctx.total)">{{ '>>' }}</a>
+</div>
 
 <app-modal #paymentsModel>
   <p class="text-2xl font-bold" header>Payments</p>

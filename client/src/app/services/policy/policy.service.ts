@@ -58,6 +58,7 @@ export class PolicyService {
     sortRev = false,
   }): Observable<{
     policies: Policy[],
+    policiesTotalCount: number,
   }> {
     let policies = [...Array(limit)]
       .map((_, i) => genPolicy(offset + i));
@@ -65,6 +66,9 @@ export class PolicyService {
     policies = R.sort(R.path(sortField.split('.')), policies);
     if (sortRev) policies = policies.reverse();
 
-    return of({ policies }).pipe(observeOn(asyncScheduler));
+    return of({
+      policies,
+      policiesTotalCount: 85,
+    }).pipe(observeOn(asyncScheduler));
   }
 }

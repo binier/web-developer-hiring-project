@@ -1,0 +1,15 @@
+.policies-pagination {
+  @apply p-2 text-center bg-gray-300 rounded-b;
+}
+
+.policies-pagination a {
+  @apply bg-gray-200 font-bold shadow cursor-pointer select-none px-3 py-1;
+}
+
+.policies-pagination a:hover {
+  @apply bg-purple-300;
+}
+
+.policies-pagination a.current-page {
+  @apply bg-purple-300;
+}
