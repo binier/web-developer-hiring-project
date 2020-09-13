@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
-import { Policy } from '@app/types';
-import { BehaviorSubject } from 'rxjs';
-import { pluck } from 'rxjs/operators';
-import { Payment } from '@app/types';
+import { Policy, Payment } from '@app/types';
+import { BehaviorSubject, combineLatest, ReplaySubject, Observable } from 'rxjs';
+import { distinctUntilChanged, map, pluck, switchMap } from 'rxjs/operators';
 import { ModalComponent } from '../modal/modal.component';
 import { PolicyService } from '@app/services';
+import { SortEvent } from '@shared/policies-table/policies-table.component';
 
 @Component({
   selector: 'app-policies-manager',
@@ -13,10 +13,34 @@ import { PolicyService } from '@app/services';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PoliciesManagerComponent implements OnInit {
-  private getPolicies$ = this.policySrv.getPolicies();
-  currentPolicy$ = new BehaviorSubject<Policy>(null);
+  offset$ = new BehaviorSubject(0);
+  limit$ = new BehaviorSubject(10);
+  sort$ = new ReplaySubject<SortEvent>(1);
 
-  policies$ = this.getPolicies$.pipe(pluck('policies'));
+  getPoliciesOptions$ = combineLatest([
+      this.offset$,
+      this.limit$,
+      this.sort$,
+    ]).pipe(
+      distinctUntilChanged((prev, cur) => {
+        return prev.every((x, i) => x === cur[i]);
+      }),
+      map(x => ({
+        offset: x[0],
+        limit: x[1],
+        sortField: x[2].column,
+        sortRev: x[2].rev,
+      })),
+    );
+
+  private getPolicies$ = this.getPoliciesOptions$.pipe(
+    switchMap(x => this.policySrv.getPolicies(x)),
+  );
+  policies$: Observable<Policy[]> = this.getPolicies$.pipe(
+    pluck('policies'),
+  );
+
+  currentPolicy$ = new BehaviorSubject<Policy>(null);
 
   @ViewChild('paymentsModel', { static: true })
   paymentsModel: ModalComponent;

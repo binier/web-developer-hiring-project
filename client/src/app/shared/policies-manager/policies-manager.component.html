@@ -5,7 +5,8 @@
   <app-policies-table
     [policies]="policies$ | async"
     (policyClick)="policyClick($event)"
-    ></app-policies-table>
+    (sort)="sort$.next($event)"
+  ></app-policies-table>
 </div>
 
 <app-modal #paymentsModel>

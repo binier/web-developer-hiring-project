@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import * as R from 'ramda';
+import { asyncScheduler, Observable, of } from 'rxjs';
 import { Policy } from '@app/types';
+import { observeOn } from 'rxjs/operators';
 
 const genPolicy = (index: number): Policy => ({
   id: index * 5 + 1,
@@ -49,11 +51,20 @@ export class PolicyService {
 
   constructor() { }
 
-  getPolicies(offset = 0, limit = 10): Observable<{
+  getPolicies({
+    offset = 0,
+    limit = 10,
+    sortField = 'number',
+    sortRev = false,
+  }): Observable<{
     policies: Policy[],
   }> {
-    return of({
-      policies: [...Array(limit)].map((_, i) => genPolicy(offset + i)),
-    });
+    let policies = [...Array(limit)]
+      .map((_, i) => genPolicy(offset + i));
+
+    policies = R.sort(R.path(sortField.split('.')), policies);
+    if (sortRev) policies = policies.reverse();
+
+    return of({ policies }).pipe(observeOn(asyncScheduler));
   }
 }
