@@ -30,6 +30,7 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
     column: string,
   }>();
   @Output() sort = new EventEmitter<SortEvent>();
+  @Output() selectedChange = new EventEmitter<Set<Policy['id']>>();
 
   private subs: Subscription[] = [];
 
@@ -83,7 +84,8 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subs.push(
-      this.sort$.subscribe(x => this.sort.emit(x))
+      this.sort$.subscribe(x => this.sort.emit(x)),
+      this.selectedIDsSet$.subscribe(x => this.selectedChange.emit(x))
     );
     this.doSort('number', false);
   }
