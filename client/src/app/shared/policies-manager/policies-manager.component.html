@@ -18,7 +18,9 @@
         </div>
         <div class="border-t border-gray-100"></div>
         <div class="py-1">
-          <a href="#" class="block px-4 py-2 text-sm text-red-700 leading-5 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">Delete Selected</a>
+          <a href="#" class="block px-4 py-2 text-sm text-red-700 leading-5 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+            Delete Selected ({{ selectedPolicyCountOnPage$ | async }})
+          </a>
         </div>
       </div>
     </app-dropdown>
@@ -29,6 +31,7 @@
     [policies]="policies$ | async"
     (policyClick)="policyClick($event)"
     (sort)="sort$.next($event)"
+    (selectedChange)="selectedPolicyIDs$.next($event)"
   ></app-policies-table>
 </div>
 <div *ngIf="{ page: page$ | async, total: policiesTotalPages$ | async} as ctx" class="policies-pagination">

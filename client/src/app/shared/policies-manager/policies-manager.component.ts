@@ -78,6 +78,21 @@ export class PoliciesManagerComponent implements OnInit, OnDestroy {
       })
     );
 
+  selectedPolicyIDs$ = new BehaviorSubject<Set<Policy['id']>>(new Set());
+  selectedPolicyIDsOnPage$: Observable<Policy['id'][]> = combineLatest([
+      this.policies$,
+      this.selectedPolicyIDs$,
+    ])
+    .pipe(
+      map(([ policies, selectedIDs ]) => {
+        return policies
+          .map(x => x.id)
+          .filter(x => selectedIDs.has(x));
+      })
+    );
+  selectedPolicyCountOnPage$ = this.selectedPolicyIDsOnPage$
+    .pipe(map(x => x.length));
+
   currentPolicy$ = new BehaviorSubject<Policy>(null);
 
   @ViewChild('paymentsModel', { static: true })
