@@ -42,7 +42,7 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
       distinctUntilChanged((prev, cur) => {
         return prev.every((x, i) => x === cur[i]);
       }),
-      map(([column, rev]) => ({ column, rev })),
+      map(([column, rev]) => ({ column, rev }))
     );
 
   constructor() { }

@@ -45,7 +45,7 @@ const genPolicy = (index: number): Policy => ({
 });
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PolicyService {
 

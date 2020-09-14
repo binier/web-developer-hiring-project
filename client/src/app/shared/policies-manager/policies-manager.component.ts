@@ -10,7 +10,7 @@ import { SortEvent } from '@shared/policies-table/policies-table.component';
   selector: 'app-policies-manager',
   templateUrl: './policies-manager.component.html',
   styleUrls: ['./policies-manager.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PoliciesManagerComponent implements OnInit, OnDestroy {
   private subs: Subscription[] = [];
@@ -29,16 +29,16 @@ export class PoliciesManagerComponent implements OnInit, OnDestroy {
       this.limit$,
     ])
     .pipe(
-      map(([count, limit]) => Math.ceil(count / limit)),
+      map(([count, limit]) => Math.ceil(count / limit))
     );
 
   page$ = combineLatest([
       merge(this.setPage$, of(1)),
-      this.policiesTotalPages$
+      this.policiesTotalPages$,
     ])
     .pipe(
       filter(([page, total]) => this.isPageValid(page, total)),
-      map(([page]) => page),
+      map(([page]) => page)
     );
 
   getPoliciesOptions$ = combineLatest([
@@ -54,15 +54,15 @@ export class PoliciesManagerComponent implements OnInit, OnDestroy {
         limit: x[1],
         sortField: x[2].column,
         sortRev: x[2].rev,
-      })),
+      }))
     );
 
   private getPolicies$ = this.getPoliciesOptions$.pipe(
     switchMap(x => this.policySrv.getPolicies(x)),
-    share(),
+    share()
   );
   policies$: Observable<Policy[]> = this.getPolicies$.pipe(
-    pluck('policies'),
+    pluck('policies')
   );
 
   paginationPages$ = combineLatest([
@@ -71,7 +71,7 @@ export class PoliciesManagerComponent implements OnInit, OnDestroy {
     ]).pipe(
       map(([page, total]) => {
         if (page === 1)
-          return [1,2,3];
+          return [1, 2, 3];
         if (page === total)
           return [page - 2, page - 1, page];
         return [page - 1, page, page + 1];

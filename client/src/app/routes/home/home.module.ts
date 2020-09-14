@@ -15,12 +15,12 @@ import { PolicyService } from '@services/index';
     PoliciesTableComponent,
     ModalComponent,
 
-    HomeComponent
+    HomeComponent,
   ],
   imports: [
     CommonModule,
-    HomeRoutingModule
+    HomeRoutingModule,
   ],
-  providers: [ PolicyService ]
+  providers: [ PolicyService ],
 })
 export class HomeModule { }

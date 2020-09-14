@@ -11,8 +11,7 @@
       ]
     },
     "array-type": false,
-    "arrow-return-shorthand": true,
-    "curly": true,
+    "arrow-parens": false,
     "deprecation": {
       "severity": "warning"
     },
@@ -21,17 +20,19 @@
       true,
       "rxjs/Rx"
     ],
+    "interface-name": false,
     "import-spacing": true,
-    "indent": {
-      "options": [
-        "spaces"
-      ]
-    },
+    "indent": [
+      true, 
+      "spaces", 
+      2
+    ],
     "max-classes-per-file": false,
     "max-line-length": [
       true,
       140
     ],
+    "member-access": false,
     "member-ordering": [
       true,
       {
@@ -43,6 +44,7 @@
         ]
       }
     ],
+    "no-consecutive-blank-lines": false,
     "no-console": [
       true,
       "debug",
@@ -60,10 +62,12 @@
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
     "no-var-requires": false,
+    "interface-over-type-literal": false,
     "object-literal-key-quotes": [
       true,
       "as-needed"
     ],
+    "object-literal-sort-keys": false,
     "quotemark": [
       true,
       "single"
@@ -82,9 +86,17 @@
         "named": "never"
       }
     },
-    "typedef": [
+    "trailing-comma": [
       true,
-      "call-signature"
+      {
+        "singleline": "never",
+        "multiline": {
+          "objects": "always",
+          "arrays": "always",
+          "functions": "never",
+          "typeLiterals": "ignore"
+        }
+      }
     ],
     "typedef-whitespace": {
       "options": [
