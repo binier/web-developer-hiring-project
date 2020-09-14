@@ -1,5 +1,8 @@
 <table class="w-full max-h-screen whitespace-no-wrap shadow table-auto">
   <thead *ngIf="(sort$ | async) as sort" class="bg-purple-200 rounded">
+    <th (click)="toggleAllSelected$.next()" class="cursor-pointer">
+      <input [checked]="isAllSelected$ | async" type="checkbox" class="pointer-events-none" />
+    </th>
     <th (click)="doSort('number')">
       Number
       <i *ngIf="sort.column === 'number'" class="sort-icon">
@@ -44,8 +47,11 @@
     </th>
   </thead>
 
-  <tbody>
+  <tbody *ngIf="(selectedIDsSet$ | async) as selectedIDsSet">
     <tr *ngFor="let policy of policies">
+      <td (click)="toggleSelected$.next(policy.id)" class="cursor-pointer">
+        <input [checked]="selectedIDsSet.has(policy.id)" type="checkbox" class="pointer-events-none" />
+      </td>
       <td (click)="clickPolicy(policy, 'number')" class="text-blue-500 cursor-pointer hover:underline">{{ policy.number }}</td>
       <td (click)="clickPolicy(policy, 'annual_premium')">{{ policy.annual_premium }}</td>
       <td (click)="clickPolicy(policy, 'status')">{{ policy.state.status }}</td>

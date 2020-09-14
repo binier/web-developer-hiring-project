@@ -7,9 +7,9 @@ import {
   EventEmitter,
   OnDestroy,
 } from '@angular/core';
-import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, merge, Observable, of, Subject, Subscription } from 'rxjs';
 import { Policy } from '@app/types';
-import { distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, observeOn, scan } from 'rxjs/operators';
 
 export interface SortEvent {
   column: string;
@@ -20,7 +20,7 @@ export interface SortEvent {
   selector: 'app-policies-table',
   templateUrl: './policies-table.component.html',
   styleUrls: ['./policies-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PoliciesTableComponent implements OnInit, OnDestroy {
   @Input() policies: Policy[] = [];
@@ -32,6 +32,40 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
   @Output() sort = new EventEmitter<SortEvent>();
 
   private subs: Subscription[] = [];
+
+  toggleAllSelected$ = new Subject<undefined | boolean>();
+  toggleSelected$ = new Subject<Policy['id']>();
+
+  selectedIDsSet$ = merge(
+      of({ event: 'setInitialValue', data: {} })
+        .pipe(observeOn(asyncScheduler)),
+      this.toggleAllSelected$.pipe(map(flag => ({
+        event: 'toggleAll' as const,
+        data: { flag },
+      }))),
+      this.toggleSelected$.pipe(map(id => ({
+        event: 'toggle' as const,
+        data: { id },
+      })))
+    )
+    .pipe(
+      scan((cur, { event, data }) => {
+        if (event === 'toggle' && 'id' in data) {
+          cur = new Set(cur);
+          cur.has(data.id) ? cur.delete(data.id) : cur.add(data.id);
+        } else if (event === 'toggleAll') {
+          if (('flag' in data && data.flag) || this.isAllSelected(cur))
+            return new Set();
+          else
+            return new Set(this.policies.map(({ id }) => id));
+        }
+        return cur;
+      }, new Set<Policy['id']>())
+    );
+
+  isAllSelected$: Observable<boolean> = this.selectedIDsSet$.pipe(
+    map(selected => this.isAllSelected(selected))
+  );
 
   private sortColumn$ = new BehaviorSubject<string>(null);
   private sortRev$ = new BehaviorSubject<boolean>(null);
@@ -56,6 +90,10 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.forEach(x => x.unsubscribe());
+  }
+
+  isAllSelected(selected: Set<Policy['id']>) {
+    return this.policies.every(({ id }) => selected.has(id));
   }
 
   clickPolicy(policy: Policy, column: string) {
