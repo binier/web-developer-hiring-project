@@ -95,8 +95,8 @@ export class PoliciesManagerComponent implements OnInit, OnDestroy {
 
   currentPolicy$ = new BehaviorSubject<Policy>(null);
 
-  @ViewChild('paymentsModel', { static: true })
-  paymentsModel: ModalComponent;
+  @ViewChild('paymentsModal', { static: true })
+  paymentsModal: ModalComponent;
 
   constructor(private policySrv: PolicyService) { }
 
@@ -126,7 +126,7 @@ export class PoliciesManagerComponent implements OnInit, OnDestroy {
   }): void {
     if (column === 'payments') {
       this.currentPolicy$.next(policy);
-      this.paymentsModel.open();
+      this.paymentsModal.open();
     }
   }
 }
