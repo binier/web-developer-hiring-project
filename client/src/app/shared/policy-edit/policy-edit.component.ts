@@ -14,7 +14,7 @@ function floatCompare(a: number, b: number, precision = 10) {
   templateUrl: './policy-edit.component.html',
   styleUrls: ['./policy-edit.component.scss'],
 })
-export class PolicyCreateComponent implements OnInit {
+export class PolicyEditComponent implements OnInit {
   @Input() step = 1;
   /** changes to the input won't reflect in the form */
   @Input() policy: any = {};

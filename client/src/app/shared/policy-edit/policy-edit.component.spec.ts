@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PolicyCreateComponent } from './policy-edit.component';
+import { PolicyEditComponent } from './policy-edit.component';
 
-describe('PolicyCreateComponent', () => {
-  let component: PolicyCreateComponent;
-  let fixture: ComponentFixture<PolicyCreateComponent>;
+describe('PolicyEditComponent', () => {
+  let component: PolicyEditComponent;
+  let fixture: ComponentFixture<PolicyEditComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PolicyCreateComponent ],
+      declarations: [ PolicyEditComponent ],
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PolicyCreateComponent);
+    fixture = TestBed.createComponent(PolicyEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
