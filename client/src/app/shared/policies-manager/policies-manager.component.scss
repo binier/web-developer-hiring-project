@@ -1,3 +1,7 @@
+button:disabled {
+  @apply opacity-50;
+}
+
 .policies-pagination {
   @apply p-2 text-center bg-gray-300 rounded-b;
 }

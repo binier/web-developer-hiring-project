@@ -2,7 +2,7 @@
   <span class="font-bold border-b-0">Policies</span>
   <span class="absolute" style="right: 1.25rem">
     <app-dropdown>
-      <div button>
+      <div class="select-none" button>
         <span class="rounded-md shadow-sm">
           <button type="button" class="inline-flex justify-center w-full px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md leading-5 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" aria-haspopup="true" aria-expanded="true">
             Actions
@@ -12,8 +12,8 @@
           </button>
         </span>
       </div>
-      <div class="bg-white rounded-md shadow-xs" role="menu" aria-orientation="vertical" aria-labelledby="options-menu" list>
-        <div class="py-1">
+      <div class="bg-white select-none rounded-md shadow-xs" role="menu" aria-orientation="vertical" aria-labelledby="options-menu" list>
+        <div (click)="policyCreateModal.open()" class="py-1">
           <a href="#" class="block px-4 py-2 text-sm text-gray-700 leading-5 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">Create</a>
         </div>
         <div class="border-t border-gray-100"></div>
@@ -65,5 +65,28 @@
         </tr>
       </tbody>
     </table>
+  </div>
+</app-modal>
+
+<app-modal [isOpen]="true" #policyCreateModal>
+  <p class="text-2xl font-bold" header>Create Policy</p>
+  <div style="height: 29rem" body>
+    <app-policy-edit #policyCreate></app-policy-edit>
+  </div>
+  <div footer>
+    <button
+      *ngIf="!policyCreate.isFirstStep"
+      (click)="policyCreate.prevStep()"
+      class="block inline-block px-4 py-1 mb-1 leading-tight text-center text-white bg-gray-600 border rounded hover:bg-gray-500"
+    >
+      prev
+    </button>
+    <button
+      (click)="policyCreate.nextStep()"
+      [disabled]="!policyCreate.isStepValid"
+      class="inline-block px-4 py-1 mb-1 ml-2 leading-tight text-center text-white bg-green-500 border rounded hover:bg-green-400"
+    >
+      next
+    </button>
   </div>
 </app-modal>
