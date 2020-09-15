@@ -17,7 +17,7 @@
           <a href="#" class="block px-4 py-2 text-sm text-gray-700 leading-5 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">Create</a>
         </div>
         <div class="border-t border-gray-100"></div>
-        <div class="py-1">
+        <div class="py-1" [class.opacity-50]="(selectedPolicyCountOnPage$ | async) < 1">
           <a href="#" class="block px-4 py-2 text-sm text-red-700 leading-5 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
             Delete Selected ({{ selectedPolicyCountOnPage$ | async }})
           </a>
