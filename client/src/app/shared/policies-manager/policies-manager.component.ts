@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Policy, Payment } from '@app/types';
 import { BehaviorSubject, combineLatest, ReplaySubject, Observable, Subject, merge, of, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, pluck, share, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, pluck, share, switchMap, startWith } from 'rxjs/operators';
 import { ModalComponent } from '../modal/modal.component';
 import { PolicyService } from '@app/services';
 import { SortEvent } from '@shared/policies-table/policies-table.component';
@@ -20,10 +20,10 @@ export class PoliciesManagerComponent implements OnInit, OnDestroy {
 
   setPoliciesTotalCount$ = new Subject<number>();
 
-  limit$ = merge(this.setLimit$, of(10)).pipe(filter(x => x > 0));
+  limit$ = this.setLimit$.pipe(filter(x => x > 0), startWith(10));
   sort$ = new ReplaySubject<SortEvent>(1);
 
-  policiesTotalCount$ = merge(this.setPoliciesTotalCount$, of(10));
+  policiesTotalCount$ = this.setPoliciesTotalCount$.pipe(startWith(10));
   policiesTotalPages$ = combineLatest([
       this.policiesTotalCount$,
       this.limit$,
@@ -33,7 +33,7 @@ export class PoliciesManagerComponent implements OnInit, OnDestroy {
     );
 
   page$ = combineLatest([
-      merge(this.setPage$, of(1)),
+      this.setPage$.pipe(startWith(1)),
       this.policiesTotalPages$,
     ])
     .pipe(

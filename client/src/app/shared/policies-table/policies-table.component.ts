@@ -7,9 +7,9 @@ import {
   EventEmitter,
   OnDestroy,
 } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, merge, Observable, of, Subject, Subscription } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, merge, Observable, Subject, Subscription } from 'rxjs';
 import { Policy } from '@app/types';
-import { distinctUntilChanged, filter, map, observeOn, scan } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, scan, startWith } from 'rxjs/operators';
 
 export interface SortEvent {
   column: string;
@@ -38,8 +38,6 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
   toggleSelected$ = new Subject<Policy['id']>();
 
   selectedIDsSet$ = merge(
-      of({ event: 'setInitialValue', data: {} })
-        .pipe(observeOn(asyncScheduler)),
       this.toggleAllSelected$.pipe(map(flag => ({
         event: 'toggleAll' as const,
         data: { flag },
@@ -61,7 +59,8 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
             return new Set(this.policies.map(({ id }) => id));
         }
         return cur;
-      }, new Set<Policy['id']>())
+      }, new Set<Policy['id']>()),
+      startWith(new Set<any>(), asyncScheduler)
     );
 
   isAllSelected$: Observable<boolean> = this.selectedIDsSet$.pipe(
