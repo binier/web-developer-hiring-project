@@ -1586,6 +1586,13 @@ alphanum-sort@^1.0.0:
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
 
+angular-mydatepicker@^0.10.2:
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/angular-mydatepicker/-/angular-mydatepicker-0.10.2.tgz#c1040a602a058f0c9d53a59ebd12f164248ff96d"
+  integrity sha512-hzJRnSJSyfrqZDDlqhfXmkWgkMDklYeqqaweEQpc+hyW4Z2yqHlpPq9LdttoIolscQ21y+M+tWAfCDCu9HiEiw==
+  dependencies:
+    tslib "^1.9.0"
+
 ansi-colors@4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/ansi-colors/-/ansi-colors-4.1.1.tgz#cbb9ae256bf750af1eab344f229aa27fe94ba348"
