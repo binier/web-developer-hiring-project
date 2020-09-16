@@ -32,6 +32,8 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
   @Output() sort = new EventEmitter<SortEvent>();
   @Output() selectedChange = new EventEmitter<Set<Policy['id']>>();
 
+  sortableColumns = new Set(['number', 'annual_premium', 'effective_date']);
+
   destroy$ = new Subject();
 
   toggleAllSelected$ = new Subject<undefined | boolean>();
@@ -98,7 +100,7 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
   }
 
   isAllSelected(selected: Set<Policy['id']>) {
-    return this.policies.every(({ id }) => selected.has(id));
+    return this.policies?.every(({ id }) => selected.has(id));
   }
 
   clickPolicy(policy: Policy, column: string) {
@@ -106,6 +108,8 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
   }
 
   doSort(column: string, rev?: boolean): void {
+    // supported fields
+    if (!this.sortableColumns.has(column)) return;
     if (typeof rev !== 'boolean') {
       if (column === this.sortColumn$.value)
         rev = !this.sortRev$.value;
