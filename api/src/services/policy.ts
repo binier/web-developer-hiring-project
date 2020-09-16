@@ -24,6 +24,7 @@ export async function getPolicies({
   const policies = await prisma.policy.findMany({
     include: {
       states: {
+        where: { created: { lte: new Date() } },
         orderBy: { updated: 'desc' },
         take: 1,
       },
@@ -53,11 +54,17 @@ export function createPolicy(
   state: StateCreateWithoutPolicyInput,
   payments: PaymentCreateWithoutPolicyInput
 ) {
+  const cancelationState = {
+    ...state,
+    created: new Date(invoice.due_on),
+    updated: new Date(invoice.due_on),
+  };
+
   return prisma.policy.create({
     data: {
       ...policy,
       invoice: { create: invoice },
-      states: { create: state },
+      states: { create: [state, cancelationState] },
       payments: { create: payments },
     },
   });
