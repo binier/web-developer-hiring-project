@@ -7,9 +7,9 @@ import {
   EventEmitter,
   OnDestroy,
 } from '@angular/core';
-import { asyncScheduler, BehaviorSubject, combineLatest, merge, Observable, Subject, Subscription } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
 import { Policy } from '@app/types';
-import { distinctUntilChanged, filter, map, scan, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, scan, startWith, takeUntil } from 'rxjs/operators';
 
 export interface SortEvent {
   column: string;
@@ -32,7 +32,7 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
   @Output() sort = new EventEmitter<SortEvent>();
   @Output() selectedChange = new EventEmitter<Set<Policy['id']>>();
 
-  private subs: Subscription[] = [];
+  destroy$ = new Subject();
 
   toggleAllSelected$ = new Subject<undefined | boolean>();
   toggleSelected$ = new Subject<Policy['id']>();
@@ -82,15 +82,19 @@ export class PoliciesTableComponent implements OnInit, OnDestroy {
   constructor() { }
 
   ngOnInit(): void {
-    this.subs.push(
-      this.sort$.subscribe(x => this.sort.emit(x)),
-      this.selectedIDsSet$.subscribe(x => this.selectedChange.emit(x))
-    );
+    this.sort$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(x => this.sort.emit(x)),
+    this.selectedIDsSet$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(x => this.selectedChange.emit(x));
+
     this.doSort('number', false);
   }
 
   ngOnDestroy(): void {
-    this.subs.forEach(x => x.unsubscribe());
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   isAllSelected(selected: Set<Policy['id']>) {

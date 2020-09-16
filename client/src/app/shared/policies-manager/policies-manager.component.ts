@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Policy, Payment } from '@app/types';
-import { BehaviorSubject, combineLatest, ReplaySubject, Observable, Subject, merge, of, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, pluck, share, switchMap, startWith } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, ReplaySubject, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, map, pluck, share, switchMap, startWith, takeUntil } from 'rxjs/operators';
 import { ModalComponent } from '../modal/modal.component';
 import { PolicyService } from '@app/services';
 import { SortEvent } from '@shared/policies-table/policies-table.component';
@@ -13,7 +13,7 @@ import { SortEvent } from '@shared/policies-table/policies-table.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PoliciesManagerComponent implements OnInit, OnDestroy {
-  private subs: Subscription[] = [];
+  destroy$ = new Subject();
 
   setPage$ = new Subject<number>();
   setLimit$ = new Subject<number>();
@@ -101,15 +101,15 @@ export class PoliciesManagerComponent implements OnInit, OnDestroy {
   constructor(private policySrv: PolicyService) { }
 
   ngOnInit(): void {
-    this.subs.push(this.getPolicies$
-      .pipe(pluck('policiesTotalCount'))
+    this.getPolicies$
+      .pipe(pluck('policiesTotalCount'), takeUntil(this.destroy$))
       .subscribe(this.setPoliciesTotalCount$)
-    );
+    ;
   }
 
   ngOnDestroy(): void {
-    this.subs.forEach(x => x.unsubscribe());
-    this.subs = [];
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   paymentsSum({ payments }: { payments: Payment[] }): number {
