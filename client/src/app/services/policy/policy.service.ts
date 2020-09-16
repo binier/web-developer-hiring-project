@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import * as R from 'ramda';
-import { asyncScheduler, interval, Observable, of } from 'rxjs';
+import { interval, Observable } from 'rxjs';
 import { PolicyRaw, Policy, PolicyCreateInput, PolicyEditInput } from '@app/types';
-import { first, observeOn } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 const genPolicy = (index: number): Policy => ({
@@ -46,6 +45,11 @@ const genPolicy = (index: number): Policy => ({
   ],
 });
 
+interface GetPoliciesResult {
+  policies: Policy[];
+  policiesTotalCount: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -61,20 +65,11 @@ export class PolicyService {
     limit = 10,
     sortField = 'number',
     sortRev = false,
-  }): Observable<{
-    policies: Policy[],
-    policiesTotalCount: number,
-  }> {
-    let policies = [...Array(limit)]
-      .map((_, i) => genPolicy(offset + i));
-
-    policies = R.sort(R.path(sortField.split('.')), policies);
-    if (sortRev) policies = policies.reverse();
-
-    return of({
-      policies,
-      policiesTotalCount: 85,
-    }).pipe(observeOn(asyncScheduler));
+  }): Observable<GetPoliciesResult> {
+    return this.http.post<{ result: GetPoliciesResult }>(
+      `${this.API_URL}/policy/list`,
+      { offset, limit, sortField, sortRev }
+    ).pipe(map(({result}) => result));
   }
 
   createPolicy(policy: PolicyCreateInput) {
