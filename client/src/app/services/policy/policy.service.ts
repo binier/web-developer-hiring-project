@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import * as R from 'ramda';
-import { asyncScheduler, Observable, of } from 'rxjs';
-import { Policy } from '@app/types';
-import { observeOn } from 'rxjs/operators';
+import { asyncScheduler, interval, Observable, of } from 'rxjs';
+import { PolicyRaw, Policy, PolicyCreateInput, PolicyEditInput } from '@app/types';
+import { first, observeOn } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 const genPolicy = (index: number): Policy => ({
   id: index * 5 + 1,
@@ -48,8 +50,11 @@ const genPolicy = (index: number): Policy => ({
   providedIn: 'root',
 })
 export class PolicyService {
+  readonly API_URL = environment.apiUrl;
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
   getPolicies({
     offset = 0,
@@ -70,5 +75,12 @@ export class PolicyService {
       policies,
       policiesTotalCount: 85,
     }).pipe(observeOn(asyncScheduler));
+  }
+
+  createPolicy(policy: PolicyCreateInput) {
+    return this.http.post<{ result: PolicyRaw }>(
+      `${this.API_URL}/policy`,
+      policy
+    );
   }
 }
