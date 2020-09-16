@@ -1,8 +1,28 @@
 import { Router } from 'express';
-import { createPolicy } from '@app/services';
+import {
+  getPolicies,
+  getPoliciesTotalCount,
+  createPolicy,
+} from '@app/services';
 
 export function policyRouter() {
   const router = Router();
+
+  router.post('/list', async (req, res, next) => {
+    const policiesPromise = getPolicies({
+      limit: Math.min(parseInt(req.body.limit) || Infinity, 20),
+      offset: Math.max(parseInt(req.body.offset) || 0, 0),
+      sortField: req.body.sortField || 'number',
+      sortRev: !!req.body.sortRev,
+    });
+    const policiesTotalCountPromise = getPoliciesTotalCount();
+
+    Promise.all([ policiesPromise, policiesTotalCountPromise ])
+      .then(([policies, policiesTotalCount]) => res.json(
+        { result: { policies, policiesTotalCount } }
+      ))
+      .catch((x: any) => next(x));
+  });
 
   router.post('/', (req, res, next) => {
     const policy = {
