@@ -5,12 +5,14 @@
     </th>
     <th (click)="doSort('number')">
       Number
+      <i *ngIf="sort.column !== 'number'" class="opacity-25">⌄</i>
       <i *ngIf="sort.column === 'number'" class="sort-icon">
         {{ sort.rev ? '⌃' : '⌄' }}
       </i>
     </th>
     <th (click)="doSort('annual_premium')">
       Annual Premium
+      <i *ngIf="sort.column !== 'annual_premium'" class="opacity-25">⌄</i>
       <i *ngIf="sort.column === 'annual_premium'" class="sort-icon">
         {{ sort.rev ? '⌃' : '⌄' }}
       </i>
@@ -29,6 +31,7 @@
     </th>
     <th (click)="doSort('effective_date')">
       Effective Date
+      <i *ngIf="sort.column !== 'effective_date'" class="opacity-25">⌄</i>
       <i *ngIf="sort.column === 'effective_date'" class="sort-icon">
         {{ sort.rev ? '⌃' : '⌄' }}
       </i>
@@ -41,6 +44,7 @@
     </th>
     <th (click)="doSort('payments')">
       Payments
+      <i *ngIf="sort.column !== 'number'" class="opacity-25">⌄</i>
       <i *ngIf="sort.column === 'payments'" class="sort-icon">
         {{ sort.rev ? '⌃' : '⌄' }}
       </i>
