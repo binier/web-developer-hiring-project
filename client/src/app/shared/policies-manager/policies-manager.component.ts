@@ -70,11 +70,14 @@ export class PoliciesManagerComponent implements OnInit, OnDestroy {
       this.policiesTotalPages$,
     ]).pipe(
       map(([page, total]) => {
+        let pages;
         if (page === 1)
-          return [1, 2, 3];
-        if (page === total)
-          return [page - 2, page - 1, page];
-        return [page - 1, page, page + 1];
+          pages = [1, 2, 3];
+        else if (page === total)
+          pages = [page - 2, page - 1, page];
+        else
+          pages = [page - 1, page, page + 1];
+        return pages.filter(x => x > 0 && x <= total);
       })
     );
 
