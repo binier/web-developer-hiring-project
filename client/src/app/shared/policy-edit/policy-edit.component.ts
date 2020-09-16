@@ -18,6 +18,7 @@ export class PolicyEditComponent implements OnInit {
   @Input() step = 1;
   /** changes to the input won't reflect in the form */
   @Input() policy: any = {};
+  @Input() isNew = !this.policy.id;
 
   @ViewChild('paymentList') paymentListEl: ElementRef;
 
