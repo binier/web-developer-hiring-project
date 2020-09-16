@@ -83,4 +83,11 @@ export class PolicyService {
       policy
     );
   }
+
+  editPolicy(policy: PolicyEditInput) {
+    return this.http.put<{ result: PolicyRaw }>(
+      `${this.API_URL}/policy`,
+      policy
+    );
+  }
 }
