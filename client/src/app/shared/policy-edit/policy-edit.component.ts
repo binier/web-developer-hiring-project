@@ -1,8 +1,10 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { IAngularMyDpOptions } from 'angular-mydatepicker';
-import { asyncScheduler } from 'rxjs';
-import { Policy } from '@app/types';
+import { asyncScheduler, Subject, of, merge } from 'rxjs';
+import { map, switchMap, startWith, catchError, share, takeUntil } from 'rxjs/operators';
+import { Policy, PolicyEditInput, PolicyCreateInput } from '@app/types';
+import { PolicyService } from '@app/services';
 
 function floatCompare(a: number, b: number, precision = 10) {
   [a, b] = [a, b].map(x => Math.floor(x * precision));
@@ -14,13 +16,18 @@ function floatCompare(a: number, b: number, precision = 10) {
   templateUrl: './policy-edit.component.html',
   styleUrls: ['./policy-edit.component.scss'],
 })
-export class PolicyEditComponent implements OnInit {
+export class PolicyEditComponent implements OnInit, OnDestroy {
   @Input() step = 1;
   /** changes to the input won't reflect in the form */
   @Input() policy: any = {};
   @Input() isNew = !this.policy.id;
 
+  @Output() actionStarted = new EventEmitter();
+  @Output() actionDone = new EventEmitter();
+
   @ViewChild('paymentList') paymentListEl: ElementRef;
+
+  destroy$ = new Subject();
 
   form: FormGroup;
   payments: {
@@ -39,7 +46,36 @@ export class PolicyEditComponent implements OnInit {
     openSelectorTopOfInput: false,
   };
 
-  constructor(private fb: FormBuilder) { }
+  createPolicy$ = new Subject<PolicyCreateInput>();
+  editPolicy$ = new Subject<PolicyEditInput>();
+
+  progress$ = merge(
+      this.createPolicy$.pipe(map(x => ({
+        action: 'create',
+        policy: x,
+      }))),
+      this.editPolicy$.pipe(map(x => ({
+        action: 'edit',
+        policy: x,
+      })))
+    ).pipe(
+      switchMap(({ action, policy }) => {
+        const obs = action === 'create'
+          ? this.policySrv.createPolicy(policy as PolicyCreateInput)
+          : this.policySrv.editPolicy(policy as PolicyEditInput);
+        return obs.pipe(
+          map(x => ({ policy: x.result, done: true })),
+          catchError(error => of({ policy, error, done: true })),
+          startWith({ policy, done: false })
+        );
+      }),
+      share()
+    );
+
+  constructor(
+    private fb: FormBuilder,
+    private policySrv: PolicyService
+  ) { }
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -65,6 +101,17 @@ export class PolicyEditComponent implements OnInit {
     });
 
     asyncScheduler.schedule(() => this.paymentListScrollToBottom('auto'));
+    this.progress$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      if (!data.done) {
+        return this.actionStarted.emit(data);
+      }
+      this.actionDone.emit(data);
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   get isFirstStep() { return this.step === 1; }
@@ -87,6 +134,7 @@ export class PolicyEditComponent implements OnInit {
     return this.payments.reduce((r, x) => r + x.amount, 0);
   }
 
+  /** TODO: currently it allows submitting without payment. */
   private paymentAmountValidator() {
     return (form: FormGroup): ValidationErrors | null => {
       const sum = this.paymentSum() + (form.controls?.payment?.value || 0);
@@ -119,6 +167,10 @@ export class PolicyEditComponent implements OnInit {
     asyncScheduler.schedule(() => this.paymentListScrollToBottom('smooth'));
   }
 
+  resetForm() {
+    this.form.reset();
+  }
+
   prevStep() {
     --this.step;
   }
@@ -132,7 +184,37 @@ export class PolicyEditComponent implements OnInit {
     this.paymentListScrollToBottom('auto');
   }
 
+  formToModel(): PolicyEditInput {
+    const data = this.form.getRawValue();
+
+    return {
+      id: this.policy.id,
+      number: data.number,
+      annual_premium: data.annual_premium,
+      effective_date: data.effective_date.singleDate.jsDate,
+      state: {
+        id: this.policy.state?.id,
+        status: data.status,
+        reason: data.reason,
+      },
+      invoice: {
+        id: this.policy.invoice?.id,
+        amount_due: data.invoice_amount,
+        due_on: data.invoice_due_on.singleDate.jsDate,
+      },
+      payments: this.payments.map(x => ({
+        id: x.id,
+        payment_amount: x.amount,
+      })),
+    };
+  }
+
   submit() {
     if (!this.isValid) return;
+
+    const policy = this.formToModel();
+
+    if (this.isNew) this.createPolicy$.next(policy);
+    else this.editPolicy$.next(policy);
   }
 }
